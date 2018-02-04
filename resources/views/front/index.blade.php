@@ -462,7 +462,7 @@
 
                     <iframe width="100%" height="280" src="https://www.youtube.com/embed/H5gOj8aIFl4" frameborder="0" allowfullscreen></iframe>
                 </div>
-            </div        >
+            </div>
         </div>
     </div>
     <div         class="global-map-area promo-box no-margin parallax" data-stellar-background-ratio="0.5">

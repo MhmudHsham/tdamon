@@ -2,9 +2,6 @@
 @section('content')
 <div class="page-title-container">
     <div class="container">
-        <div class="page-title pull-left">
-            <h2 class="entry-title">{{ $details->{$slug->title} }}</h2>
-        </div>
         <ul class="breadcrumbs pull-right">
             <li><a href="{{ url('/'.$lang.'/') }}">{{ trans("lang.home") }}</a></li>
             <li><a href="{{ url('/'.$lang.'/programs') }}">{{ trans("lang.umrah_packages") }}</a></li>
@@ -112,71 +109,90 @@
                         <div class="tab-pane fade" id="cruise-availability">
                             <div class="border-box travelo-box clearfix">
                                 <h4 class="title col-xs-12"> {{ trans("lang.reservation") }}</h4>
-                                <form action="#" method="post">
+                                <form action="#" id="book_hotel_form" method="post">
+                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                    <input type="hidden" id="hotel_id" name="hotel_id" value="{{ $id }}" />
                                     <div class="row">
-                                        <div class="col-sm-4  pull-left">
+                                        <div class="col-sm-12 col-md-4 col-lg-4 col-xs-12  pull-left">
                                             <div class="form-group">
                                                 <label> {{ trans("lang.full_name") }}</label>
-                                                <input type="text" name="name" class="input-text full-width">
+                                                <input type="text" name="name" class="input-text full-width required_field">
                                             </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4 col-lg-4 col-xs-12    pull-left">
                                             <div class="form-group">
                                                 <label> {{ trans("lang.email") }}</label>
-                                                <input type="text" name="email" class="input-text full-width">
+                                                <input type="text" name="email" class="input-text full-width ">
                                             </div>
+
+                                        </div>
+                                        <div class="col-sm-12 col-md-4 col-lg-4 col-xs-12   pull-left">
                                             <div class="form-group">
                                                 <label> {{ trans("lang.phone") }}</label>
-                                                <input type="text" name="subject" class="input-text full-width">
+                                                <input type="number"  name="phone" class="input-text full-width required_field">
                                             </div>
-                                        </div>
-                                        <div class="col-sm-8 form-group pull-left">
-                                            <label class="control-label"> {{ trans("lang.date_of_trip") }}</label>
-                                            <div class="selector">
-                                                <select class="full-width">
-                                                    <option value="801">06 / 04 / 2018</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-4 form-group pull-left">
-                                            <label class="control-label">{{ trans("lang.room_type") }}</label>
-                                            <div class="selector">
-                                                <select class="full-width">
-                                                    <option value="5">Individual</option>
-                                                    <option value="6">المزدوجة</option>
-                                                    <option value="7">الثلاثية</option>
-                                                </select><span class="custom-select full-width">Individual</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-4 form-group pull-left">
-                                            <label class="control-label">{{ trans("lang.number_of_rooms") }}</label>
-                                            <input type="number" name="subject" class="input-text full-width">
+
                                         </div>
 
-                                        <div class="col-sm-2 form-group pull-left">
-                                            <label class="control-label">{{ trans("lang.adults") }}</label>
-                                            <input type="number" name="subject" class="input-text full-width">
+
+                                        <div class="col-sm-12 col-md-6 col-lg-6 col-xs-12  form-group pull-left">
+                                            <label class="control-label"> {{ trans("lang.start_date") }}</label>
+                                            <div class="selector">
+                                                <input type="text" class="input-text full-width" name="start_date" />
+                                            </div>
                                         </div>
 
-                                        <div class="col-sm-2 form-group pull-left">
-                                            <label class="control-label">{{ trans("lang.children") }}</label>
-                                            <input type="number" name="subject" class="input-text full-width">
+
+                                        <div class="col-sm-12 col-md-6 col-lg-6 col-xs-12  form-group pull-left">
+                                            <label class="control-label"> {{ trans("lang.end_date") }}</label>
+                                            <div class="selector">
+                                                <input type="text" class="input-text full-width" name="end_date" />
+                                            </div>
                                         </div>
-                                        <div class="col-sm-2 form-group pull-left">
-                                            <label class="control-label">{{ trans("lang.infants") }}</label>
-                                            <input type="number" name="subject" class="input-text full-width">
+
+
+                                        <div class="rooms_block">
+                                            <div class="col-sm-12 col-md-2 col-lg-2 col-xs-12  form-group pull-left">
+                                                <label class="control-label">{{ trans("lang.room_type") }}</label>
+                                                <div class="selector">
+                                                    <select name="room_type[]" class="full-width required_field">
+                                                        @foreach($rooms as $one)
+                                                        <option value="{{ $one->id }}">{{ $one->{$slug->title} }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2 form-group pull-left">
+                                                <label class="control-label">{{ trans("lang.number_of_rooms") }}</label>
+                                                <input type="number" name="number_of_rooms[]" class="input-text full-width required_field">
+                                            </div>
+
+                                            <div class="col-sm-2 form-group pull-left">
+                                                <label class="control-label">{{ trans("lang.adults") }}</label>
+                                                <input type="number" name="adults[]" class="input-text full-width required_field">
+                                            </div>
+
+                                            <div class="col-sm-2 form-group pull-left">
+                                                <label class="control-label">{{ trans("lang.children") }}</label>
+                                                <input type="number" value="0" name="children[]" class="input-text full-width ">
+                                            </div>
+                                            <div class="col-sm-2 form-group pull-left">
+                                                <label class="control-label">{{ trans("lang.infants") }}</label>
+                                                <input type="number" value="0"  name="infants[]" class="input-text full-width ">
+                                            </div>
+                                            <div class="col-sm-1 form-group pull-left">
+                                                <label class="control-label"></label>
+                                                <a href="" class="btn btn-info"  id="add_more" >{{ trans("lang.more") }}</a>
+                                            </div>
                                         </div>
                                         <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                             <label class="control-label">{{ trans("lang.details") }}</label>
-                                            <textarea class="form-control" name="program_details" type="text"></textarea>
+                                            <textarea class="form-control" name="notes" type="text"></textarea>
                                         </div>
-
-
-
                                         <div class="col-sms-offset-6 col-sm-12">
-                                            <button class="btn-medium full-width">{{ trans("lang.send_booking_request") }}</button>
+                                            <button id="submit_btn" class="button yellow full-width uppercase btn-small" >{{ trans("lang.send_booking_request") }}</button>
                                         </div>
                                     </div>
-
-
                                 </form>
                             </div>
 
@@ -197,10 +213,14 @@
                                 @for($i = 0; $i < $details->stars; $i++)
                                 <span class="five-stars" style=""></span>
                                 @endfor
-
                             </div>
                         </div>
-                        <a class="button yellow full-width uppercase btn-small">{{ trans("lang.book_now") }}</a>
+                        <span class="price clearfix">
+                            <small class="pull-left"> {{ trans("lang.distance_form_haram") }} </small>
+                            <span class="pull-right">
+                                {{ $details->distance_from_the_haram }}
+                            </span>
+                        </span>
                     </div>
                 </article>
 

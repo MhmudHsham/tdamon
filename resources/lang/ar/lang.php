@@ -64,6 +64,9 @@ return [
     'need_help' => 'للمساعدة',
     'previous' => 'السابق',
     'next' => 'التالي',
+    'features' => 'الخصائص',
+    'city' => 'المدينة',
+    'distance_form_haram' => 'البعد عن الحرم',
     // end hotels
 // programs
     'book' => 'حجز',
