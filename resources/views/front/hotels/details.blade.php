@@ -138,7 +138,7 @@
                                         <div class="col-sm-12 col-md-6 col-lg-6 col-xs-12  form-group pull-left">
                                             <label class="control-label"> {{ trans("lang.start_date") }}</label>
                                             <div class="selector">
-                                                <input type="text" class="input-text full-width" name="start_date" />
+                                                <input type="date" class="input-text full-width required_field datetime" name="start_date" />
                                             </div>
                                         </div>
 
@@ -146,7 +146,7 @@
                                         <div class="col-sm-12 col-md-6 col-lg-6 col-xs-12  form-group pull-left">
                                             <label class="control-label"> {{ trans("lang.end_date") }}</label>
                                             <div class="selector">
-                                                <input type="text" class="input-text full-width" name="end_date" />
+                                                <input type="date" class="input-text full-width required_field datetime" name="end_date" />
                                             </div>
                                         </div>
 
@@ -265,4 +265,8 @@
         </div>
     </div>
 </section>
+@stop
+@section('libraries_scripts')
+{!! HTML::script('assets/global/plugins/jquery.min.js') !!}
+{!! HTML::script('front/mine/hotels_booking.js') !!}
 @stop

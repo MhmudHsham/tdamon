@@ -23,6 +23,7 @@
 {!! HTML::style('front/js/flexslider/flexslider.css') !!}
 {!! HTML::style('front/css/jquery.fancybox.css') !!}
 {!! HTML::style('front/css/jquery.fancybox-thumbs.css') !!}
+{!! HTML::script('front/css/owl.carousel.css') !!}
 <!-- Main Style -->
 <!--<link id="main-style" rel="stylesheet" href="css/style.css">-->
 <!-- Updated Styles -->

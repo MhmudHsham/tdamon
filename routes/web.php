@@ -160,6 +160,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('admin/hotels/store_room/{id}', "admin\HotelsController@store_room");
     Route::get('admin/hotels/edit_room_price/{id}', "admin\HotelsController@edit_room_price");
     Route::post('admin/hotels/update_room/{id}', "admin\HotelsController@update_room");
+    Route::get('admin/hotels/reserv_details/{id}', "admin\HotelsController@reserv_details");
+
 
     // end hotels area
     // start programs area
@@ -247,6 +249,7 @@ Route::group([
 
     Route::get(LaravelLocalization::transRoute('/hotels'), "HotelsController@index");
     Route::get(LaravelLocalization::transRoute('/hotels/details/{id}/{title}'), "HotelsController@details");
+    Route::post('/hotels/book_now', 'HotelsController@book_now');
 //    Route::get('/hotels/one_hotel/{id}/{rel}', 'HotelsController@one_hotel');
 
     Route::get(LaravelLocalization::transRoute('/programs'), "ProgramsController@index");

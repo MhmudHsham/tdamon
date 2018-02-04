@@ -66,6 +66,8 @@ return [
     'next' => 'التالي',
     'features' => 'الخصائص',
     'city' => 'المدينة',
+    'start_date' => 'من تاريخ',
+    'end_date' => 'إلى تاريخ',
     'distance_form_haram' => 'البعد عن الحرم',
     // end hotels
 // programs

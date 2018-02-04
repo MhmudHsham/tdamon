@@ -229,7 +229,17 @@
                 </div>
             </div>
 
-
+            <div class="form-group  margin-top-20">
+                <label class="control-label col-md-2"> عدد النجوم
+                    <span class="required">   </span>
+                </label>
+                <div class="col-md-9">
+                    <div class="input-icon right">
+                        <i class="fa"></i>
+                        <input type="text" class="form-control" name="stars" value="{{ $details->stars }}" />
+                    </div>
+                </div>
+            </div>
 
             <div class="form-group  margin-top-20">
                 <label class="control-label col-md-2"> البعد عن الحرم

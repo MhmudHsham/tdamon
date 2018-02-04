@@ -565,7 +565,7 @@
             </div>
 
 
-            <div class="block image-carousel style2 flexslider ltr" data-animation="slide" data-item-width="370" data-item-margin="30">
+            <div class="block hotels-logo-carousel style2  " data-animation="slide" data-item-width="370" data-item-margin="30">
                 <ul class="slides image-box style1 tour-packages">
                     @foreach($hotels as $one)
                     <li>

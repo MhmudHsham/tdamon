@@ -69,6 +69,7 @@ class HotelsController extends Controller {
         $hotels->description_ar = $request->description_ar;
         $hotels->description_en = $request->description_en;
         $hotels->description_ur = $request->description_ur;
+        $hotels->stars = $request->stars;
         $hotels->country_id = $request->country_id;
         $hotels->city_id = $request->city_id;
         $hotels->distance_from_the_haram = $request->distance_from_the_haram;
@@ -130,6 +131,7 @@ class HotelsController extends Controller {
         $hotels->description_en = $request->description_en;
         $hotels->description_ur = $request->description_ur;
         $hotels->country_id = $request->country_id;
+        $hotels->stars = $request->stars;
         $hotels->city_id = $request->city_id;
         $hotels->distance_from_the_haram = $request->distance_from_the_haram;
         $hotels->features = json_encode($request->features);
@@ -215,11 +217,6 @@ class HotelsController extends Controller {
         die();
     }
 
-    public function reservations() {
-        $reservations = Reservation::with("room")->with('hotel')->get();
-        return view('admin.hotels.reservations', compact('reservations'));
-    }
-
     public function rooms($hotel_id) {
         $rooms_of_hotel = Hotel_Room::where("hotel_id", $hotel_id)->get();
         return view("admin.hotels.rooms", compact('rooms_of_hotel', 'hotel_id'));
@@ -264,6 +261,33 @@ class HotelsController extends Controller {
         $hotel_room->price = $request->price;
         $hotel_room->save();
         return redirect(url('/admin/hotels/rooms/' . $request->hotel_id));
+    }
+
+    public function reservations() {
+        $reservations = \App\Hotelreservation::with("hotel")->get();
+        return view("admin.hotels.reservations", compact('reservations'));
+    }
+
+    public function reserv_details($id) {
+        $details = \App\Hotelreservation::with("hotel")->find($id);
+        $rooms_encoded = json_decode($details->room_type);
+        $rooms = Room::whereIn("id", $rooms_encoded)->pluck("title_ar");
+        $number_of_rooms_decoded = json_decode($details->number_of_rooms);
+        $number_of_adults_decoded = json_decode($details->adults);
+        $number_of_children_decoded = json_decode($details->children);
+        $number_of_infants_decoded = json_decode($details->infants);
+        $rooms_data = null;
+        foreach ($rooms as $key => $one) {
+            $data = array(
+                "room" => $rooms[$key],
+                "number" => $number_of_rooms_decoded[$key],
+                "adults" => $number_of_adults_decoded[$key],
+                "children" => $number_of_children_decoded[$key],
+                "infants" => $number_of_infants_decoded[$key]
+            );
+            $rooms_data[] = $data;
+        }
+        return view("admin.hotels.reserv_details", compact('details', 'rooms_data'));
     }
 
 }

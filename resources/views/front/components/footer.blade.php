@@ -244,6 +244,10 @@
 {!! HTML::script('front/js/waypoints.min.js') !!}
 {!! HTML::script('front/js/jquery.fancybox.js') !!}
 
+
+{!! HTML::script('front/js/owl.carousel.min.js') !!}
+
+
 @yield('scripts_pages')
 
 
@@ -318,7 +322,35 @@
     });
 </script>
 
-
+<script type="text/javascript">
+   tjq(document).ready(function () {
+            tjq('.hotels-logo-carousel').owlCarousel({
+                // loop:true,
+                navText: ["<i class='fa fa-angle-left'></i>", "<i class='fa fa-angle-right'></i>"],
+                margin: 20,
+                nav: true,
+                rewind: true,
+                smartSpeed: 1200,
+                autoplayTimeout: 3000,
+                dots:true,
+                rtl:true,
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    480:{
+                        items:1
+                    },
+                    600: {
+                        items: 2
+                    },
+                    1000: {
+                        items: 5
+                    }
+                }
+            });
+    });
+</script>
 <script>
     function play() {
         var audio = document.getElementById("audio");

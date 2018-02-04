@@ -1219,3 +1219,23 @@ article.detailed-logo h2.box-title {
 textarea {
     resize: vertical;
 }
+/**************************************************************************/
+.hotels-logo-carousel  .owl-nav div.owl-next {
+    right: 0px;
+    left: 0px;
+}
+.hotels-logo-carousel  .owl-nav div {
+    background: #d20023;
+}
+.hotels-logo-carousel  .owl-nav div {
+    position: absolute;
+    text-align: center;
+    top: -50px;
+    height: 40px;
+    width: 40px;
+    line-height: 35px;
+    font-size: 22px;
+    color: #fff;
+    right: 45px;
+    border-radius: 50px;
+}
