@@ -10,8 +10,12 @@
             <h4 class="box-title">{{ $one->{$slug->title} }}</h4>
             <div class="feedback">
                 <span class="price">
-                    @php($money = $one->dates[0]->price)
-                    @php($currency_price = $one->dates[0]->currency->price)
+                    @foreach($one->dates as $value)
+                    @if($value->currency_id == $currency_id && $value->start_date > $today)
+                    @php($money = $value->price)
+                    @php($currency_price = $value->currency->price)
+                    @endif
+                    @endforeach
                     {{ view("front.currency.convert", compact('money', 'currency_price')) }}
                 </span>
                 <div title="{{ $one->stars }} {{ trans("lang.stars") }}" class="five-stars-container" data-toggle="tooltip" data-placement="bottom">

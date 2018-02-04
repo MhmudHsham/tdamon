@@ -21,26 +21,32 @@ use App\Category;
  */
 class ProgramsController extends Controller {
 
-    public $dates;
+    public $_dates;
+    public $_max_price;
+    public $_min_price;
 
     public function index(Request $request) {
+        $currency_id = Session::get("currency_id");
         $today = date("Y-m-d");
-        $programs_count = Program::get()->count();
-        $programs = Program::whereHas('dates', function ($query) {
-                    $today = date("Y-m-d");
-                    $query->where("start_date", ">", $today);
-                })->with("dates")->orderBy("id", "desc")->limit(1)->get();
+        // get all current programs
+        $programs_count = Program::with("dates")
+                        ->whereHas('dates', function ($query) {
+                            $today = date("Y-m-d");
+                            $query->where("currency_id", Session::get("currency_id"));
+                            $query->where("start_date", ">", $today);
+                        })->get()->count();
 
-        if ($request->ajax()) {
-            $offset = $request->offset;
-            $programs = Program::whereHas('dates', function ($query) {
-                        $today = date("Y-m-d");
-                        $query->where("start_date", ">", $today);
-                    })->with("dates")->orderBy("id", "desc")->limit(1)->offset($offset)->get();
-            $view = view("front.programs.render", compact('programs'))->render();
-            echo $view;
-            die();
-        }
+        // get all programs with date larger than today + currency
+        $programs = Program::with("dates")
+                ->whereHas('dates', function ($query) {
+                    $today = date("Y-m-d");
+                    $query->where("currency_id", Session::get("currency_id"));
+                    $query->where("start_date", ">", $today);
+                })
+                ->orderBy("id", "desc")
+                ->limit(1)
+                ->get();
+
 
         $dates = Programdate::where("start_date", ">", $today)
                 ->orderBy("start_date", "asc")
@@ -58,10 +64,15 @@ class ProgramsController extends Controller {
         $minMaxPriceArray = $this->getMinMaxPrice($dates);
 // get all prices in one array
         $pricesArray = $this->makePricesArray($minMaxPriceArray);
-        $minPrice = min($pricesArray);
-        $maxPrice = max($pricesArray);
+        $minPrice = 0;
+        $maxPrice = 0;
+        if (!empty($pricesArray)) {
+            $minPrice = min($pricesArray);
+            $maxPrice = max($pricesArray);
+        }
         $current_sign = Session::get("currency_sign");
-        return view("front.programs.index", compact("minPrice", "maxPrice", "current_sign", "new_dates_array", "hotels", 'programs', 'programs_count', 'categories', 'services'));
+
+        return view("front.programs.index", compact("today", "currency_id", "minPrice", "maxPrice", "current_sign", "new_dates_array", "hotels", 'programs', 'programs_count', 'categories', 'services'));
     }
 
     public function makePricesArray($data) {
@@ -76,9 +87,11 @@ class ProgramsController extends Controller {
     public function getMinMaxPrice($dates) {
         $prices = array();
         foreach ($dates as $one) {
-            $pricesConverted = $this->convertPrice($one->price, $one->currency->price);
-            $pricesConvertedArray = explode("-", $pricesConverted);
-            $prices[] = array($pricesConvertedArray[0], $pricesConvertedArray[1]);
+            if ($one->currency_id == Session::get("currency_id")) {
+                $pricesConverted = $this->convertPrice($one->price, $one->currency->price);
+                $pricesConvertedArray = explode("-", $pricesConverted);
+                $prices[] = array($pricesConvertedArray[0], $pricesConvertedArray[1]);
+            }
         }
         return $prices;
     }
@@ -93,14 +106,51 @@ class ProgramsController extends Controller {
     }
 
     public function handleFilter(Request $request) {
-        $filterArray = $request->filter;
-        $seasons = $filterArray['season'];
-        $this->dates = $filterArray['dates'];
-        Program::
-                whereHas("dates", function($query) {
-                    $query->whereIn("start_date", $this->dates);
+        $currency_id = Session::get("currency_id");
+        $today = date("Y-m-d");
+        $filterArray = json_decode($request->filter);
+        $stars = array(1, 2, 3, 4, 5);
+        $seasons = $this->getDefaultSeasons();
+        $this->_dates = $this->getAllDates();
+        $this->_min_price = $filterArray->price[0];
+        $this->_max_price = $filterArray->price[1];
+        $offset = 0;
+        if (isset($filterArray->season) && $filterArray->season != "") {
+            $seasons = $filterArray->season;
+        }
+        if (isset($filterArray->star) && $filterArray->star != "") {
+            $stars = $filterArray->star;
+        }
+        if (isset($filterArray->date) && $filterArray->date != "") {
+            $this->_dates = $filterArray->date;
+        }
+        if (isset($filterArray->offset) && $filterArray->offset != "") {
+            $offset = $filterArray->offset;
+        }
+        $programs = Program::whereIn("category_id", $seasons)
+                ->whereIn("stars", $stars)
+                ->whereHas("dates", function($query) {
+                    $query->where("currency_id", Session::get("currency_id"));
+                    $query->whereBetween('price', [$this->_min_price, $this->_max_price]);
+                    $query->whereIn("start_date", $this->_dates);
                 })
-                ->whereIn("category_id", $seasons)->get();
+                ->limit(1)
+                ->offset($offset)
+                ->orderBy("id", "desc")
+                ->get();
+        echo view("front.programs.render", compact('programs', 'currency_id', 'today'))->render();
+        die();
+    }
+
+    // get id of all seasons
+    public function getDefaultSeasons() {
+        return Category::pluck("id");
+    }
+
+    // get all dates that after today
+    public function getAllDates() {
+        $today = date("Y-m-d");
+        return Programdate::where("start_date", ">", $today)->pluck("start_date");
     }
 
     public function details($id) {
